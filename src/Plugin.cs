@@ -15,12 +15,13 @@ namespace OreWeakSpots
     {
         public const string GUID = "felih.OreWeakSpots";
         public const string NAME = "Ore Weak Spots";
-        public const string VERSION = "0.9.2";
+        public const string VERSION = "0.9.3";
 
         public static ManualLogSource Log;
 
         public static ConfigEntry<bool> Enabled;
         public static ConfigEntry<float> CritMultiplier;
+        public static ConfigEntry<bool> CritUsesMidDamage;
         public static ConfigEntry<int> SpotCount;
         public static ConfigEntry<float> HitTolerance;
         public static ConfigEntry<float> SpotLifetime;
@@ -48,7 +49,10 @@ namespace OreWeakSpots
             CritMultiplier = Config.Bind("1 - General", "CritMultiplier", 2f,
                 new ConfigDescription("Pickaxe damage multiplier when you hit a weak spot.",
                     new AcceptableValueRange<float>(1f, 10f)));
-            AllRocks = Config.Bind("1 - General", "AllRocks", true,
+            CritUsesMidDamage = Config.Bind("1 - General", "CritUsesMidDamage", true,
+                "Always use 2x mid damage: a crit ignores the game's random damage roll and uses the middle of your " +
+                "pickaxe skill's damage range before multiplying, so crits are never weak. Off = the crit multiplies whatever the game rolled.");
+            AllRocks =Config.Bind("1 - General", "AllRocks", true,
                 "If on, weak spots appear on any rock, not only on ores.");
             OreNames = Config.Bind("1 - General", "OreNames",
                 "copper,silver,obsidian,mudpile,meteorite,flametal,softtissue,giant,blackmarble,iron",
@@ -131,6 +135,16 @@ namespace OreWeakSpots
         private static void DestructibleDamage(Destructible __instance, HitData __0)
         {
             WeakSpotManager.OnPickaxeHit(__instance, __0);
+        }
+    }
+
+    // Remembers the pickaxe damage roll so a crit can swap it for the middle of the range.
+    [HarmonyPatch(typeof(Skills), "GetRandomSkillFactor")]
+    internal static class SkillRollPatch
+    {
+        private static void Postfix(Skills __instance, Skills.SkillType __0, float __result)
+        {
+            WeakSpotManager.NoteSkillRoll(__instance, __0, __result);
         }
     }
 

@@ -42,6 +42,7 @@ Press **F1** in game (needs Configuration Manager) or edit `BepInEx/config/felih
 |---|---|---|
 | Enabled | on | Turns the mod on or off. |
 | CritMultiplier | 2 | Damage multiplier when you hit a weak spot. |
+| CritUsesMidDamage | on | A crit uses the middle of your skill's damage range instead of the game's random roll, so crits are never weak. |
 | AllRocks | on | Weak spots on every rock, not only on ore. |
 | OreNames | copper, silver… | Names that count as ore when AllRocks is off. |
 | Exclude | tin | Rocks that never get weak spots. |
@@ -111,6 +112,7 @@ Aperte **F1** no jogo (precisa do Configuration Manager) ou edite `BepInEx/confi
 |---|---|---|
 | Enabled | ligado | Liga ou desliga o mod. |
 | CritMultiplier | 2 | Multiplicador do dano ao acertar uma esfera. |
+| CritUsesMidDamage | ligado | O crítico usa o meio da faixa de dano da sua habilidade em vez do sorteio do jogo, então ele nunca sai fraco. |
 | AllRocks | ligado | Esferas em qualquer pedra, não só em minério. |
 | OreNames | copper, silver… | Nomes que contam como minério quando AllRocks está desligado. |
 | Exclude | tin | Pedras que nunca recebem esferas. |

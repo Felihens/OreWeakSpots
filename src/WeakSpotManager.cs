@@ -250,10 +250,32 @@ namespace OreWeakSpots
         private void ApplyCrit(HitData hit)
         {
             float before = hit.m_damage.m_pickaxe;
+            string note = "";
+            // The game scales each swing by a random roll around a center set by the skill level.
+            // With CritUsesMidDamage, the crit swaps that roll for the center before multiplying.
+            if (Plugin.CritUsesMidDamage.Value && Time.time - _rollTime < 1f && _lastRoll > 0.01f)
+            {
+                hit.m_damage.m_pickaxe = hit.m_damage.m_pickaxe / _lastRoll * _midRoll;
+                note = ", roll " + _lastRoll.ToString("0.00") + " → mid " + _midRoll.ToString("0.00");
+            }
             hit.m_damage.m_pickaxe *= Plugin.CritMultiplier.Value;
             if (Plugin.DebugLog.Value)
                 Plugin.Log.LogInfo("Crit: pickaxe damage " + before.ToString("0.0") + " → " + hit.m_damage.m_pickaxe.ToString("0.0") +
-                                   " (x" + Plugin.CritMultiplier.Value.ToString("0.##") + ")");
+                                   " (x" + Plugin.CritMultiplier.Value.ToString("0.##") + note + ")");
+        }
+
+        // Latest pickaxe damage roll of the local player, and the middle of its range.
+        private static float _lastRoll = 1f, _midRoll = 1f, _rollTime = -100f;
+
+        public static void NoteSkillRoll(Skills skills, Skills.SkillType skill, float roll)
+        {
+            if (skill != Skills.SkillType.Pickaxes) return;
+            Player p = Player.m_localPlayer;
+            if (p == null || skills != p.GetSkills()) return;
+            float center = Mathf.Lerp(0.4f, 1f, skills.GetSkillFactor(skill));
+            _midRoll = (Mathf.Clamp01(center - 0.15f) + Mathf.Clamp01(center + 0.15f)) * 0.5f;
+            _lastRoll = roll;
+            _rollTime = Time.time;
         }
 
         // Last hit we handled, so the damage number the game shows for it can be logged too.

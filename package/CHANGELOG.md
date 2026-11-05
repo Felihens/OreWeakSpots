@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.3
+- New option `CritUsesMidDamage` (on by default): a crit ignores the game's random damage roll and uses the middle of your pickaxe skill's damage range before multiplying, so crits are never weak. / Nova opção `CritUsesMidDamage` (ligada por padrão): o crítico ignora o sorteio de dano do jogo e usa o meio da faixa de dano da sua habilidade de picareta antes de multiplicar, então ele nunca sai fraco.
+- README: links for bugs and suggestions. / README: links para bugs e sugestões.
+
 ## 0.9.2
 - Config options, values and log messages are now in English. **Your old settings reset to the defaults**; you can delete the old `felih.OreWeakSpots.cfg`. / Opções, valores e mensagens do log agora em inglês. **As configurações antigas voltam ao padrão**; pode apagar o `felih.OreWeakSpots.cfg` antigo.
 - New README with a screenshot. / README novo, com print.
