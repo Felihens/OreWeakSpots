@@ -63,6 +63,10 @@ Press **F1** in game (needs Configuration Manager) or edit `BepInEx/config/felih
 
 Drop `.wav` or `.ogg` files into `BepInEx/plugins/OreWeakSpots/SFX`. With `CritSound` set to `Auto` or `File`, one of them plays at random on each crit. Without files, the mod uses the game's own sound for hitting a staggered enemy.
 
+### Bugs & suggestions
+
+Found a bug or have an idea? Open an [issue](https://github.com/Felihens/OreWeakSpots/issues) or start a [discussion](https://github.com/Felihens/OreWeakSpots/discussions) on GitHub.
+
 ### Notes
 
 - ImpactfulSkills has its own random mining crit. Those crits come from ImpactfulSkills, not from this mod.
@@ -127,6 +131,10 @@ Aperte **F1** no jogo (precisa do Configuration Manager) ou edite `BepInEx/confi
 ### Som próprio para o crítico
 
 Coloque arquivos `.wav` ou `.ogg` na pasta `BepInEx/plugins/OreWeakSpots/SFX`. Com `CritSound` em `Auto` ou `File`, o mod toca um deles ao acaso a cada crítico. Sem arquivos, ele usa o som do próprio jogo ao acertar um inimigo atordoado.
+
+### Bugs e sugestões
+
+Achou um bug ou tem uma ideia? Abra uma [issue](https://github.com/Felihens/OreWeakSpots/issues) ou comece uma [discussão](https://github.com/Felihens/OreWeakSpots/discussions) no GitHub.
 
 ### Observações
 
