@@ -1,9 +1,10 @@
 # Changelog
 
 ## 0.9.1
-- Crit damage number is now yellow and twice as big (`CorDoNumeroCritico`, `TamanhoDoNumeroCritico`); the "CRÍTICO!" popup was removed. / Número de dano do crítico amarelo e com o dobro do tamanho; texto "CRÍTICO!" removido.
+- Config options, values and log messages are now in English. **Your old settings reset to the defaults**; you can delete the old `felih.OreWeakSpots.cfg`. / Opções, valores e mensagens do log agora em inglês. **As configurações antigas voltam ao padrão**; pode apagar o `felih.OreWeakSpots.cfg` antigo.
+- Crit damage number is now yellow and twice as big (`CritNumberColor`, `CritNumberSize`); the "CRÍTICO!" popup was removed. / Número de dano do crítico amarelo e com o dobro do tamanho; texto "CRÍTICO!" removido.
 - Less noise in the BepInEx log. / Menos avisos no log do BepInEx.
-- New icon. / Ícone novo.
+- New icon, screenshot and README. / Ícone, print e README novos.
 
 ## 0.9.0
 - Crit sound now plays through the game's audio mixer (always audible). / Som de crítico tocado pelo canal de áudio do jogo.

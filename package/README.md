@@ -2,122 +2,134 @@
 
 **[English](#english) · [Português](#português)**
 
+![Critical hit on a copper deposit: a flash and a big yellow damage number](https://raw.githubusercontent.com/Felihens/OreWeakSpots/main/docs/screenshots/1-critico.png)
+
 ---
 
 ## English
 
-A client-side Valheim mod that adds a timing-and-aim layer to mining. When you aim at a rock or ore deposit with a pickaxe, small balls of light appear on its surface. Hit one and the swing becomes a **critical hit** (2x damage by default), with a flash, a big yellow damage number and a sound.
+Mining with a bit of aim. When you aim at a rock or ore deposit with a pickaxe, small glowing orbs appear on its surface. Hit one and your swing becomes a **critical hit**: double damage by default, with a flash, a sound and a big yellow damage number.
 
-- **Client-side only:** the server and other players do **not** need the mod.
+### Features
+
+- **Client-side only.** The server and other players don't need the mod.
 - Weak spots fade in, pulse, fade out and reappear somewhere else on the rock every few seconds.
 - They spread over the whole visible surface of the rock and keep a minimum distance from each other.
-- Works on every rock by default. Tin is excluded because the deposits are too small.
+- Works on every rock and ore deposit. Tin is left out because its deposits are too small.
+- Crit hits show a yellow damage number twice the normal size.
 
 ### Requirements
 
-- BepInExPack Valheim.
+- [BepInExPack Valheim](https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/)
 
 ### Installation
 
-**r2modman / Thunderstore Mod Manager:** install from Thunderstore. To install a downloaded zip instead, go to Settings → *Import local mod*.
+**r2modman / Thunderstore Mod Manager:** click *Install*. To install a downloaded zip, go to Settings → *Import local mod*.
 
 **Manual:**
 1. Extract the zip.
 2. Copy the `plugins/OreWeakSpots` folder into `Valheim/BepInEx/plugins/`.
-   Result: `Valheim/BepInEx/plugins/OreWeakSpots/OreWeakSpots.dll`.
+   You should end up with `Valheim/BepInEx/plugins/OreWeakSpots/OreWeakSpots.dll`.
 3. Launch the game.
 
 To update, delete the old `OreWeakSpots` folder before copying the new one.
 
 ### Configuration
 
-Press **F1** in game (requires Configuration Manager) or edit `BepInEx/config/felih.OreWeakSpots.cfg`. The option names are in Portuguese:
+Press **F1** in game (needs Configuration Manager) or edit `BepInEx/config/felih.OreWeakSpots.cfg`.
 
 | Option | Default | What it does |
 |---|---|---|
-| Ativado | on | Enables/disables the mod. |
-| MultiplicadorCritico | 2 | Damage multiplier when you hit a weak spot. |
-| TodasAsPedras | on | Weak spots on every rock, not only ore. |
-| NomesDeMinerios | copper, silver… | Ore names to match when TodasAsPedras is off. |
-| Excluir | tin | Rocks that never get weak spots. |
-| Quantidade | 4 | Weak spots at the same time (1–8). |
-| DistanciaEntrePontos | 1.2 m | Minimum distance between weak spots. |
-| ToleranciaDeAcerto | 0.6 m | How close the swing must land to a weak spot. |
-| DuracaoDoPonto | 5 s | Time before a weak spot moves. |
-| DistanciaMaxima | 8 m | Max distance from your eyes where spots can appear. |
-| TempoSemMirar | 3 s | Time without aiming before the spots disappear. |
-| Cor | Dourado | Gold (Dourado) or blue (Azul). |
-| Tamanho | 1 | Size of the light balls. |
-| VolumeDoSom | 1 | Crit sound volume (0 = off). |
-| SomDoCritico | Automatico | Automatico, Arquivo (file), Jogo (game), Mod or Nenhum (none). |
-| CorDoNumeroCritico | Amarelo | Color of the crit damage number: Amarelo (yellow), Vermelho (red) or Normal. |
-| TamanhoDoNumeroCritico | 2 | Size of the crit damage number (2 = double, 1 = unchanged). |
+| Enabled | on | Turns the mod on or off. |
+| CritMultiplier | 2 | Damage multiplier when you hit a weak spot. |
+| AllRocks | on | Weak spots on every rock, not only on ore. |
+| OreNames | copper, silver… | Names that count as ore when AllRocks is off. |
+| Exclude | tin | Rocks that never get weak spots. |
+| Count | 4 | Weak spots at the same time (1–8). |
+| MinSpacing | 1.2 m | Minimum distance between weak spots. |
+| HitTolerance | 0.6 m | How close to a weak spot the swing must land. |
+| SpotLifetime | 5 s | Time before a weak spot moves. |
+| MaxDistance | 8 m | How far from your eyes weak spots can appear. |
+| IdleTimeout | 3 s | Time without aiming before the weak spots disappear. |
+| Color | Gold | Gold or Blue. |
+| Size | 1 | Size of the orbs. |
+| SoundVolume | 1 | Crit sound volume (0 = off). |
+| CritSound | Auto | Auto, File, Game, Mod or None. |
+| CritNumberColor | Yellow | Crit damage number color: Yellow, Red or Normal. |
+| CritNumberSize | 2 | Crit damage number size (2 = double, 1 = unchanged). |
+| DetailedLog | off | Writes every hit to the BepInEx log, for troubleshooting. |
 
-### Custom sound
+### Custom crit sound
 
-Drop `.wav` or `.ogg` files into `BepInEx/plugins/OreWeakSpots/SFX`. With `SomDoCritico` set to `Automatico` or `Arquivo`, one of them is picked at random on each crit. Without files, the mod plays the game's own sound for hitting a staggered enemy.
+Drop `.wav` or `.ogg` files into `BepInEx/plugins/OreWeakSpots/SFX`. With `CritSound` set to `Auto` or `File`, one of them plays at random on each crit. Without files, the mod uses the game's own sound for hitting a staggered enemy.
 
 ### Notes
 
-- ImpactfulSkills has its own random mining crit. That one comes from ImpactfulSkills, not from this mod.
-- On servers with rules or anti-cheat, let the owner know: this mod increases your pickaxe damage.
+- ImpactfulSkills has its own random mining crit. Those crits come from ImpactfulSkills, not from this mod.
+- On servers with rules or anti-cheat, check with the owner first: this mod increases your pickaxe damage.
+- Sister mod: **Tree Weak Spots** does the same for chopping fallen logs.
 
 ---
 
 ## Português
 
-Mod client-side para Valheim: ao mirar numa pedra ou minério com a picareta, pequenas esferas de luz surgem na superfície. Acertar uma esfera dá **dano crítico** (2x por padrão), com clarão, número de dano grande e amarelo e som.
+Mineração com um pouco de mira. Ao mirar numa pedra ou depósito de minério com a picareta, pequenas esferas de luz aparecem na superfície. Acerte uma e o golpe vira um **crítico**: dano dobrado por padrão, com clarão, som e um número de dano grande e amarelo.
 
-- **Só no seu jogo:** o servidor e os outros jogadores **não** precisam ter o mod.
-- As esferas surgem com fade, pulsam, somem e reaparecem em outro lugar da pedra a cada poucos segundos.
-- Elas se espalham pela superfície visível inteira, com distância mínima entre si.
-- Funciona em todas as pedras por padrão. O estanho fica de fora porque é pequeno demais.
+### O que o mod faz
+
+- **Só no seu jogo.** O servidor e os outros jogadores não precisam ter o mod.
+- As esferas surgem aos poucos, pulsam, somem e reaparecem em outro ponto da pedra a cada poucos segundos.
+- Elas se espalham por toda a parte visível da pedra, com uma distância mínima entre si.
+- Funciona em todas as pedras e minérios. O estanho fica de fora porque os depósitos são pequenos demais.
+- O número de dano do crítico aparece amarelo e com o dobro do tamanho.
 
 ### Requisitos
 
-- BepInExPack Valheim.
+- [BepInExPack Valheim](https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/)
 
 ### Instalação
 
-**r2modman / Thunderstore Mod Manager:** instale pelo Thunderstore. Para instalar um zip baixado, use Configurações → *Import local mod*.
+**r2modman / Thunderstore Mod Manager:** clique em *Install*. Para instalar um zip baixado, vá em Configurações → *Import local mod*.
 
-**À mão:**
+**Manual:**
 1. Extraia o zip.
 2. Copie a pasta `plugins/OreWeakSpots` para dentro de `Valheim/BepInEx/plugins/`.
-   Resultado: `Valheim/BepInEx/plugins/OreWeakSpots/OreWeakSpots.dll`.
+   O resultado deve ser `Valheim/BepInEx/plugins/OreWeakSpots/OreWeakSpots.dll`.
 3. Abra o jogo.
 
 Para atualizar, apague a pasta `OreWeakSpots` antiga antes de copiar a nova.
 
 ### Configuração
 
-Aperte **F1** no jogo (precisa do Configuration Manager) ou edite `BepInEx/config/felih.OreWeakSpots.cfg`.
+Aperte **F1** no jogo (precisa do Configuration Manager) ou edite `BepInEx/config/felih.OreWeakSpots.cfg`. Os nomes das opções ficam em inglês:
 
 | Opção | Padrão | O que faz |
 |---|---|---|
-| Ativado | ligado | Liga/desliga o mod. |
-| MultiplicadorCritico | 2 | Multiplicador do dano ao acertar uma esfera. |
-| TodasAsPedras | ligado | Esferas em qualquer pedra, não só em minério. |
-| NomesDeMinerios | copper, silver… | Usado quando TodasAsPedras está desligado. |
-| Excluir | tin | Pedras que nunca recebem esferas. |
-| Quantidade | 4 | Esferas ao mesmo tempo (1 a 8). |
-| DistanciaEntrePontos | 1,2 m | Distância mínima entre esferas. |
-| ToleranciaDeAcerto | 0,6 m | Quão perto o golpe precisa passar da esfera. |
-| DuracaoDoPonto | 5 s | Tempo até a esfera mudar de lugar. |
-| DistanciaMaxima | 8 m | Até que distância dos olhos as esferas surgem. |
-| TempoSemMirar | 3 s | Tempo sem mirar até as esferas sumirem. |
-| Cor | Dourado | Dourado ou Azul. |
-| Tamanho | 1 | Tamanho das esferas. |
-| VolumeDoSom | 1 | Volume do som de crítico (0 desliga). |
-| SomDoCritico | Automatico | Automatico, Arquivo, Jogo, Mod ou Nenhum. |
-| CorDoNumeroCritico | Amarelo | Cor do número de dano do crítico: Amarelo, Vermelho ou Normal. |
-| TamanhoDoNumeroCritico | 2 | Tamanho do número de dano do crítico (2 = o dobro, 1 = sem mudança). |
+| Enabled | ligado | Liga ou desliga o mod. |
+| CritMultiplier | 2 | Multiplicador do dano ao acertar uma esfera. |
+| AllRocks | ligado | Esferas em qualquer pedra, não só em minério. |
+| OreNames | copper, silver… | Nomes que contam como minério quando AllRocks está desligado. |
+| Exclude | tin | Pedras que nunca recebem esferas. |
+| Count | 4 | Esferas ao mesmo tempo (1 a 8). |
+| MinSpacing | 1,2 m | Distância mínima entre as esferas. |
+| HitTolerance | 0,6 m | Quão perto da esfera o golpe precisa cair. |
+| SpotLifetime | 5 s | Tempo até a esfera mudar de lugar. |
+| MaxDistance | 8 m | Até que distância dos olhos as esferas aparecem. |
+| IdleTimeout | 3 s | Tempo sem mirar até as esferas sumirem. |
+| Color | Gold | Gold (dourado) ou Blue (azul). |
+| Size | 1 | Tamanho das esferas. |
+| SoundVolume | 1 | Volume do som do crítico (0 desliga). |
+| CritSound | Auto | Auto, File (arquivo), Game (jogo), Mod ou None (nenhum). |
+| CritNumberColor | Yellow | Cor do número do crítico: Yellow (amarelo), Red (vermelho) ou Normal. |
+| CritNumberSize | 2 | Tamanho do número do crítico (2 = o dobro, 1 = sem mudança). |
+| DetailedLog | desligado | Registra cada golpe no log do BepInEx, para investigar problemas. |
 
-### Som próprio
+### Som próprio para o crítico
 
-Coloque arquivos `.wav` ou `.ogg` na pasta `BepInEx/plugins/OreWeakSpots/SFX`. Com `SomDoCritico` em `Automatico` ou `Arquivo`, o mod sorteia um deles a cada crítico. Sem arquivos, ele usa o som do jogo de acertar inimigo de postura quebrada.
+Coloque arquivos `.wav` ou `.ogg` na pasta `BepInEx/plugins/OreWeakSpots/SFX`. Com `CritSound` em `Auto` ou `File`, o mod toca um deles ao acaso a cada crítico. Sem arquivos, ele usa o som do próprio jogo ao acertar um inimigo atordoado.
 
 ### Observações
 
-- O ImpactfulSkills tem um crítico aleatório próprio na mineração. Esse crítico é dele, não deste mod.
-- Em servidores com regras ou anti-cheat, avise o dono: o mod aumenta o dano dos seus golpes de picareta.
+- O ImpactfulSkills tem um crítico aleatório próprio na mineração. Esses críticos são dele, não deste mod.
+- Em servidores com regras ou anti-cheat, fale com o dono antes: o mod aumenta o dano da sua picareta.
+- Mod irmão: o **Tree Weak Spots** faz o mesmo no corte de troncos caídos.

@@ -50,9 +50,9 @@ namespace OreWeakSpots
             for (int i = 0; i < shaderNames.Length && _shader == null; i++)
             {
                 _shader = Shader.Find(shaderNames[i]);
-                if (_shader != null) Plugin.Log.LogInfo("Shader usado: " + shaderNames[i]);
+                if (_shader != null) Plugin.Log.LogInfo("Shader in use: " + shaderNames[i]);
             }
-            if (_shader == null) Plugin.Log.LogWarning("Nenhum shader transparente encontrado; só a luz do ponto será visível.");
+            if (_shader == null) Plugin.Log.LogWarning("No transparent shader found; only the spot's light will be visible.");
             _critClip = MakeCritClip();
             StartCoroutine(LoadSoundFiles());
         }
@@ -67,11 +67,11 @@ namespace OreWeakSpots
             if (player == null) return;
             Character attacker = hit.GetAttacker();
             string why = null;
-            if (attacker != player) why = "golpe não é do jogador local (" + (attacker == null ? "nulo" : attacker.name) + ")";
-            else if (hit.m_skill != Skills.SkillType.Pickaxes) why = "ferramenta não é picareta (" + hit.m_skill + ")";
-            else if (!IsOre(rock)) why = "não está na lista de minérios";
+            if (attacker != player) why = "hit is not from the local player (" + (attacker == null ? "null" : attacker.name) + ")";
+            else if (hit.m_skill != Skills.SkillType.Pickaxes) why = "tool is not a pickaxe (" + hit.m_skill + ")";
+            else if (!IsOre(rock)) why = "not in the ore list";
             if (Plugin.DebugLog.Value)
-                Plugin.Log.LogInfo("Golpe em " + OreId(rock) + " (" + rock.GetType().Name + "): " + (why == null ? "aceito" : "ignorado, " + why));
+                Plugin.Log.LogInfo("Hit on " + OreId(rock) + " (" + rock.GetType().Name + "): " + (why == null ? "accepted" : "ignored, " + why));
             if (why != null) return;
             _inst.HandleHit(rock, hit);
         }
@@ -195,8 +195,8 @@ namespace OreWeakSpots
             _anchor = anchor;
             _lastSeenTime = Time.time;
             if (Plugin.DebugLog.Value)
-                Plugin.Log.LogInfo("Marcando " + OreId(rock) + " (" + rock.GetType().Name + ") com " +
-                                   Plugin.SpotCount.Value + " pontos fracos.");
+                Plugin.Log.LogInfo("Marking " + OreId(rock) + " (" + rock.GetType().Name + ") with " +
+                                   Plugin.SpotCount.Value + " weak spots.");
             for (int i = 0; i < Plugin.SpotCount.Value; i++)
             {
                 WeakSpot s = CreateSpot();
@@ -235,8 +235,8 @@ namespace OreWeakSpots
             }
 
             if (Plugin.DebugLog.Value)
-                Plugin.Log.LogInfo("Golpe em " + rock.name + ": distância até o ponto mais próximo = " +
-                                   (best == null ? "nenhum ponto" : bestDist.ToString("0.00") + " m"));
+                Plugin.Log.LogInfo("Hit on " + rock.name + ": distance to the nearest spot = " +
+                                   (best == null ? "no spot" : bestDist.ToString("0.00") + " m"));
 
             if (best != null && bestDist <= Plugin.HitTolerance.Value)
             {
@@ -252,7 +252,7 @@ namespace OreWeakSpots
             float before = hit.m_damage.m_pickaxe;
             hit.m_damage.m_pickaxe *= Plugin.CritMultiplier.Value;
             if (Plugin.DebugLog.Value)
-                Plugin.Log.LogInfo("Crítico: dano de picareta " + before.ToString("0.0") + " → " + hit.m_damage.m_pickaxe.ToString("0.0") +
+                Plugin.Log.LogInfo("Crit: pickaxe damage " + before.ToString("0.0") + " → " + hit.m_damage.m_pickaxe.ToString("0.0") +
                                    " (x" + Plugin.CritMultiplier.Value.ToString("0.##") + ")");
         }
 
@@ -265,7 +265,7 @@ namespace OreWeakSpots
             _lastHitTime = Time.time;
             _lastHitPos = hit.m_point;
             if (Plugin.DebugLog.Value)
-                Plugin.Log.LogInfo("Dano do golpe: picareta " + hit.m_damage.m_pickaxe.ToString("0.0") +
+                Plugin.Log.LogInfo("Hit damage: pickaxe " + hit.m_damage.m_pickaxe.ToString("0.0") +
                                    ", total " + hit.m_damage.GetTotalDamage().ToString("0.0"));
         }
 
@@ -445,11 +445,11 @@ namespace OreWeakSpots
                 if (tooClose) { crowded++; continue; }
 
                 pos = first.point; normal = first.normal; col = first.collider;
-                if (Plugin.DebugLog.Value) Plugin.Log.LogInfo("Ponto fraco colocado em " + first.collider.name + " a " + first.distance.ToString("0.0") + " m dos olhos.");
+                if (Plugin.DebugLog.Value) Plugin.Log.LogInfo("Weak spot placed on " + first.collider.name + " a " + first.distance.ToString("0.0") + " m from the eyes.");
                 return true;
             }
-            if (Plugin.DebugLog.Value) Plugin.Log.LogInfo("Não achei lugar para o ponto fraco: sem acerto=" + noHit + ", bloqueado=" + blocked +
-                               (blocked > 0 ? " por " + blocker : "") + ", longe=" + far + ", perto de outro=" + crowded);
+            if (Plugin.DebugLog.Value) Plugin.Log.LogInfo("No place found for the weak spot: no hit=" + noHit + ", blocked=" + blocked +
+                               (blocked > 0 ? " by " + blocker : "") + ", far=" + far + ", near another=" + crowded);
             return false;
         }
 
@@ -457,7 +457,7 @@ namespace OreWeakSpots
 
         public Color CurrentColor()
         {
-            return Plugin.SpotColor.Value == SpotColorOption.Azul
+            return Plugin.SpotColor.Value == SpotColorOption.Blue
                 ? new Color(0.35f, 0.75f, 1f)
                 : new Color(1f, 0.78f, 0.25f);
         }
@@ -564,21 +564,21 @@ namespace OreWeakSpots
         {
             float vol = Plugin.SoundVolume.Value;
             CritSoundOption mode = Plugin.CritSound.Value;
-            if (vol <= 0f || mode == CritSoundOption.Nenhum) return;
+            if (vol <= 0f || mode == CritSoundOption.None) return;
             FindGameCritSound();
 
             List<AudioClip> pool = null;
-            if (mode == CritSoundOption.Automatico)
+            if (mode == CritSoundOption.Auto)
                 pool = _fileClips.Count > 0 ? _fileClips : (_gameClips.Count > 0 ? _gameClips : null);
-            else if (mode == CritSoundOption.Arquivo) pool = _fileClips.Count > 0 ? _fileClips : null;
-            else if (mode == CritSoundOption.Jogo) pool = _gameClips.Count > 0 ? _gameClips : null;
+            else if (mode == CritSoundOption.File) pool = _fileClips.Count > 0 ? _fileClips : null;
+            else if (mode == CritSoundOption.Game) pool = _gameClips.Count > 0 ? _gameClips : null;
 
             AudioClip clip = pool != null ? pool[Random.Range(0, pool.Count)] : _critClip;
             AudioSource src = GetPlayerAudio();
             if (src == null || clip == null) return;
             src.pitch = Random.Range(0.95f, 1.05f);
             src.PlayOneShot(clip, vol);
-            if (Plugin.DebugLog.Value) Plugin.Log.LogInfo("Som de crítico: " + clip.name);
+            if (Plugin.DebugLog.Value) Plugin.Log.LogInfo("Crit sound: " + clip.name);
         }
 
         private AudioSource GetPlayerAudio()
@@ -627,8 +627,8 @@ namespace OreWeakSpots
                     if (list[i].m_prefab != null) CollectClips(list[i].m_prefab);
                 }
             }
-            Plugin.Log.LogInfo("Som de postura quebrada do jogo: " + _gameClips.Count + " clipe(s)" +
-                               (_mixerGroup != null ? ", canal " + _mixerGroup.name : ", sem canal de áudio"));
+            Plugin.Log.LogInfo("Game stagger sound: " + _gameClips.Count + " clip(s)" +
+                               (_mixerGroup != null ? ", channel " + _mixerGroup.name : ", no audio channel"));
         }
 
         private void CollectClips(GameObject fx)
@@ -682,9 +682,9 @@ namespace OreWeakSpots
                     {
                         clip.name = System.IO.Path.GetFileNameWithoutExtension(files[i]);
                         _fileClips.Add(clip);
-                        Plugin.Log.LogInfo("Som carregado: " + System.IO.Path.GetFileName(files[i]));
+                        Plugin.Log.LogInfo("Sound loaded: " + System.IO.Path.GetFileName(files[i]));
                     }
-                    else Plugin.Log.LogWarning("Não consegui carregar o som " + files[i] + ": " + req.error);
+                    else Plugin.Log.LogWarning("Could not load sound " + files[i] + ": " + req.error);
                 }
             }
         }

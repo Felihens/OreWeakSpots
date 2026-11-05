@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace OreWeakSpots
 {
-    public enum SpotColorOption { Azul, Dourado }
-    public enum CritSoundOption { Automatico, Arquivo, Jogo, Mod, Nenhum }
-    public enum CritNumberColorOption { Amarelo, Vermelho, Normal }
+    public enum SpotColorOption { Blue, Gold }
+    public enum CritSoundOption { Auto, File, Game, Mod, None }
+    public enum CritNumberColorOption { Yellow, Red, Normal }
 
     [BepInPlugin(GUID, NAME, VERSION)]
     public class Plugin : BaseUnityPlugin
@@ -44,54 +44,54 @@ namespace OreWeakSpots
         {
             Log = Logger;
 
-            Enabled = Config.Bind("1 - Geral", "Ativado", true, "Liga ou desliga o mod.");
-            CritMultiplier = Config.Bind("1 - Geral", "MultiplicadorCritico", 2f,
-                new ConfigDescription("Multiplicador de dano da picareta ao acertar um ponto fraco.",
+            Enabled = Config.Bind("1 - General", "Enabled", true, "Turns the mod on or off.");
+            CritMultiplier = Config.Bind("1 - General", "CritMultiplier", 2f,
+                new ConfigDescription("Pickaxe damage multiplier when you hit a weak spot.",
                     new AcceptableValueRange<float>(1f, 10f)));
-            AllRocks = Config.Bind("1 - Geral", "TodasAsPedras", true,
-                "Se ligado, pontos fracos aparecem em qualquer pedra, não só em minérios.");
-            OreNames = Config.Bind("1 - Geral", "NomesDeMinerios",
+            AllRocks = Config.Bind("1 - General", "AllRocks", true,
+                "If on, weak spots appear on any rock, not only on ores.");
+            OreNames = Config.Bind("1 - General", "OreNames",
                 "copper,silver,obsidian,mudpile,meteorite,flametal,softtissue,giant,blackmarble,iron",
-                "Partes do nome dos objetos que contam como minério (separados por vírgula). Usado quando TodasAsPedras está desligado.");
-            Excluded = Config.Bind("1 - Geral", "Excluir", "tin",
-                "Partes do nome de pedras que NUNCA recebem pontos fracos, mesmo com TodasAsPedras ligado (separados por vírgula). Padrão: estanho, que é pequeno demais.");
+                "Parts of object names that count as ore (comma-separated). Used when AllRocks is off.");
+            Excluded = Config.Bind("1 - General", "Exclude", "tin",
+                "Parts of rock names that NEVER get weak spots, even with AllRocks on (comma-separated). Default: tin, which is too small.");
 
-            SpotCount = Config.Bind("2 - Pontos fracos", "Quantidade", 4,
-                new ConfigDescription("Quantos pontos fracos aparecem ao mesmo tempo.",
+            SpotCount = Config.Bind("2 - Weak spots", "Count", 4,
+                new ConfigDescription("How many weak spots appear at the same time.",
                     new AcceptableValueRange<int>(1, 8)));
-            MinSpacing = Config.Bind("2 - Pontos fracos", "DistanciaEntrePontos", 1.2f,
-                new ConfigDescription("Distância mínima (metros) entre dois pontos fracos. Se a pedra for pequena demais, aparecem menos pontos em vez de ficarem amontoados.",
+            MinSpacing = Config.Bind("2 - Weak spots", "MinSpacing", 1.2f,
+                new ConfigDescription("Minimum distance (meters) between two weak spots. On a rock that is too small, fewer spots appear instead of crowding together.",
                     new AcceptableValueRange<float>(0.3f, 5f)));
-            HitTolerance = Config.Bind("2 - Pontos fracos", "ToleranciaDeAcerto", 0.6f,
-                new ConfigDescription("Distância máxima (metros) entre o golpe e o ponto para contar como crítico.",
+            HitTolerance = Config.Bind("2 - Weak spots", "HitTolerance", 0.6f,
+                new ConfigDescription("Maximum distance (meters) between the hit and the spot for a crit.",
                     new AcceptableValueRange<float>(0.1f, 2f)));
-            SpotLifetime = Config.Bind("2 - Pontos fracos", "DuracaoDoPonto", 5f,
-                new ConfigDescription("Segundos que cada ponto fica visível antes de mudar de lugar.",
+            SpotLifetime = Config.Bind("2 - Weak spots", "SpotLifetime", 5f,
+                new ConfigDescription("Seconds each spot stays visible before it moves.",
                     new AcceptableValueRange<float>(1f, 30f)));
-            MaxDistance = Config.Bind("2 - Pontos fracos", "DistanciaMaxima", 8f,
-                new ConfigDescription("Distância máxima (metros) dos seus olhos em que um ponto pode surgir. Os pontos se espalham pela superfície inteira do minério dentro dessa distância.",
+            MaxDistance = Config.Bind("2 - Weak spots", "MaxDistance", 8f,
+                new ConfigDescription("Maximum distance (meters) from your eyes where a spot can appear. Spots spread over the whole ore surface within this distance.",
                     new AcceptableValueRange<float>(2f, 20f)));
-            ActiveDuration = Config.Bind("2 - Pontos fracos", "TempoSemMirar", 3f,
-                new ConfigDescription("Segundos sem mirar nem golpear o minério até os pontos sumirem.",
+            ActiveDuration = Config.Bind("2 - Weak spots", "IdleTimeout", 3f,
+                new ConfigDescription("Seconds without aiming at or hitting the ore before the spots disappear.",
                     new AcceptableValueRange<float>(0.5f, 60f)));
 
-            SpotColor = Config.Bind("3 - Visual", "Cor", SpotColorOption.Dourado, "Cor dos pontos fracos.");
-            SpotSize = Config.Bind("3 - Visual", "Tamanho", 1f,
-                new ConfigDescription("Escala das esferas de luz (1 = cerca de 16 cm).", new AcceptableValueRange<float>(0.3f, 3f)));
-            SoundVolume = Config.Bind("3 - Visual", "VolumeDoSom", 1f,
-                new ConfigDescription("Volume do som de crítico (0 desliga). Também segue o volume de efeitos do jogo.", new AcceptableValueRange<float>(0f, 1f)));
-            CritSound = Config.Bind("3 - Visual", "SomDoCritico", CritSoundOption.Automatico,
-                "Automatico = arquivo da pasta SFX do mod se houver, senão o som do jogo. " +
-                "Arquivo = só arquivos .wav/.ogg da pasta BepInEx/plugins/OreWeakSpots/SFX (sorteia um). " +
-                "Jogo = som do Valheim ao acertar inimigo de postura quebrada. Mod = o \"tim\" do mod. Nenhum = sem som.");
-            CritNumberColor = Config.Bind("3 - Visual", "CorDoNumeroCritico", CritNumberColorOption.Amarelo,
-                "Cor do número de dano de um golpe crítico. Normal = cor padrão do jogo.");
-            CritNumberScale = Config.Bind("3 - Visual", "TamanhoDoNumeroCritico", 2f,
-                new ConfigDescription("Tamanho do número de dano de um golpe crítico (2 = o dobro do normal, 1 = sem mudança).",
+            SpotColor = Config.Bind("3 - Visuals", "Color", SpotColorOption.Gold, "Weak spot color.");
+            SpotSize = Config.Bind("3 - Visuals", "Size", 1f,
+                new ConfigDescription("Scale of the glowing orbs (1 = about 16 cm).", new AcceptableValueRange<float>(0.3f, 3f)));
+            SoundVolume = Config.Bind("3 - Visuals", "SoundVolume", 1f,
+                new ConfigDescription("Crit sound volume (0 = off). Also follows the game's effects volume.", new AcceptableValueRange<float>(0f, 1f)));
+            CritSound = Config.Bind("3 - Visuals", "CritSound", CritSoundOption.Auto,
+                "Auto = a file from the mod's SFX folder if there is one, otherwise the game sound. " +
+                "File = only .wav/.ogg files from BepInEx/plugins/OreWeakSpots/SFX (one at random). " +
+                "Game = Valheim's sound for hitting a staggered enemy. Mod = the mod's own chime. None = no sound.");
+            CritNumberColor = Config.Bind("3 - Visuals", "CritNumberColor", CritNumberColorOption.Yellow,
+                "Color of a crit's damage number. Normal = the game's default color.");
+            CritNumberScale = Config.Bind("3 - Visuals", "CritNumberSize", 2f,
+                new ConfigDescription("Size of a crit's damage number (2 = double, 1 = unchanged).",
                     new AcceptableValueRange<float>(1f, 4f)));
 
-            DebugLog = Config.Bind("9 - Debug", "LogDetalhado", false,
-                "Escreve no log do BepInEx cada golpe, onde os pontos foram colocados e a distância do golpe até o ponto (ajuda a calibrar).");
+            DebugLog = Config.Bind("9 - Debug", "DetailedLog", false,
+                "Writes each hit, where the spots were placed and the distance from the hit to the spot to the BepInEx log (helps tuning).");
 
             GameObject go = new GameObject("OreWeakSpots_Manager");
             Object.DontDestroyOnLoad(go);
@@ -100,7 +100,7 @@ namespace OreWeakSpots
             _harmony = new Harmony(GUID);
             _harmony.PatchAll(typeof(Plugin).Assembly);
 
-            Log.LogInfo(NAME + " " + VERSION + " carregado.");
+            Log.LogInfo(NAME + " " + VERSION + " loaded.");
         }
 
         private void OnDestroy()
@@ -148,7 +148,7 @@ namespace OreWeakSpots
             {
                 bool crit = WeakSpotManager.IsRecentCrit(pos);
                 if (Plugin.DebugLog.Value && (crit || WeakSpotManager.IsRecentHit(pos)))
-                    Plugin.Log.LogInfo("Número na tela: " + text + (crit ? " (crítico)" : ""));
+                    Plugin.Log.LogInfo("On-screen number: " + text + (crit ? " (crit)" : ""));
                 if (!crit) return;
                 if (_worldTexts == null) _worldTexts = AccessTools.Field(typeof(DamageText), "m_worldTexts");
                 System.Collections.IList list = _worldTexts.GetValue(__instance) as System.Collections.IList;
@@ -161,7 +161,7 @@ namespace OreWeakSpots
                 System.Type t = tmp.GetType();
                 if (Plugin.CritNumberColor.Value != CritNumberColorOption.Normal)
                 {
-                    Color c = Plugin.CritNumberColor.Value == CritNumberColorOption.Vermelho
+                    Color c = Plugin.CritNumberColor.Value == CritNumberColorOption.Red
                         ? new Color(1f, 0.18f, 0.12f) : new Color(1f, 0.82f, 0.1f);
                     t.GetProperty("color").SetValue(tmp, c, null);
                 }
