@@ -1,6 +1,6 @@
 {
   "name": "OreWeakSpots",
-  "version_number": "0.9.0",
+  "version_number": "0.9.1",
   "website_url": "https://github.com/Felihens/OreWeakSpots",
   "description": "Glowing weak spots appear on rocks when you aim with a pickaxe. Hit one for a critical strike. Client-side, no server install needed.",
   "dependencies": [

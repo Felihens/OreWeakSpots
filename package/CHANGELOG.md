@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.1
+- Crit damage number is now yellow and twice as big (`CorDoNumeroCritico`, `TamanhoDoNumeroCritico`); the "CRÍTICO!" popup was removed. / Número de dano do crítico amarelo e com o dobro do tamanho; texto "CRÍTICO!" removido.
+- Less noise in the BepInEx log. / Menos avisos no log do BepInEx.
+- New icon. / Ícone novo.
+
 ## 0.9.0
 - Crit sound now plays through the game's audio mixer (always audible). / Som de crítico tocado pelo canal de áudio do jogo.
 - Default sound is the game's "hit a staggered enemy" sound. / Som padrão: acerto em inimigo de postura quebrada.

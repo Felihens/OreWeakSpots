@@ -8,13 +8,14 @@ namespace OreWeakSpots
 {
     public enum SpotColorOption { Azul, Dourado }
     public enum CritSoundOption { Automatico, Arquivo, Jogo, Mod, Nenhum }
+    public enum CritNumberColorOption { Amarelo, Vermelho, Normal }
 
     [BepInPlugin(GUID, NAME, VERSION)]
     public class Plugin : BaseUnityPlugin
     {
         public const string GUID = "felih.OreWeakSpots";
         public const string NAME = "Ore Weak Spots";
-        public const string VERSION = "0.9.0";
+        public const string VERSION = "0.9.1";
 
         public static ManualLogSource Log;
 
@@ -33,6 +34,8 @@ namespace OreWeakSpots
         public static ConfigEntry<string> OreNames;
         public static ConfigEntry<string> Excluded;
         public static ConfigEntry<float> MinSpacing;
+        public static ConfigEntry<CritNumberColorOption> CritNumberColor;
+        public static ConfigEntry<float> CritNumberScale;
         public static ConfigEntry<bool> DebugLog;
 
         private Harmony _harmony;
@@ -81,6 +84,11 @@ namespace OreWeakSpots
                 "Automatico = arquivo da pasta SFX do mod se houver, senão o som do jogo. " +
                 "Arquivo = só arquivos .wav/.ogg da pasta BepInEx/plugins/OreWeakSpots/SFX (sorteia um). " +
                 "Jogo = som do Valheim ao acertar inimigo de postura quebrada. Mod = o \"tim\" do mod. Nenhum = sem som.");
+            CritNumberColor = Config.Bind("3 - Visual", "CorDoNumeroCritico", CritNumberColorOption.Amarelo,
+                "Cor do número de dano de um golpe crítico. Normal = cor padrão do jogo.");
+            CritNumberScale = Config.Bind("3 - Visual", "TamanhoDoNumeroCritico", 2f,
+                new ConfigDescription("Tamanho do número de dano de um golpe crítico (2 = o dobro do normal, 1 = sem mudança).",
+                    new AcceptableValueRange<float>(1f, 4f)));
 
             DebugLog = Config.Bind("9 - Debug", "LogDetalhado", false,
                 "Escreve no log do BepInEx cada golpe, onde os pontos foram colocados e a distância do golpe até o ponto (ajuda a calibrar).");
@@ -123,6 +131,48 @@ namespace OreWeakSpots
         private static void DestructibleDamage(Destructible __instance, HitData __0)
         {
             WeakSpotManager.OnPickaxeHit(__instance, __0);
+        }
+    }
+
+    // Damage numbers arrive by RPC shortly after our hit (the rock's owner sends them).
+    // Any number that pops up near a crit we just landed gets the crit color and size.
+    [HarmonyPatch(typeof(DamageText), "AddInworldText")]
+    internal static class CritNumberPatch
+    {
+        private static System.Reflection.FieldInfo _worldTexts;
+        private static System.Reflection.FieldInfo _textField;
+
+        private static void Postfix(DamageText __instance, Vector3 pos, string text)
+        {
+            try
+            {
+                bool crit = WeakSpotManager.IsRecentCrit(pos);
+                if (Plugin.DebugLog.Value && (crit || WeakSpotManager.IsRecentHit(pos)))
+                    Plugin.Log.LogInfo("Número na tela: " + text + (crit ? " (crítico)" : ""));
+                if (!crit) return;
+                if (_worldTexts == null) _worldTexts = AccessTools.Field(typeof(DamageText), "m_worldTexts");
+                System.Collections.IList list = _worldTexts.GetValue(__instance) as System.Collections.IList;
+                if (list == null || list.Count == 0) return;
+                object inst = list[list.Count - 1];
+                if (_textField == null) _textField = AccessTools.Field(inst.GetType(), "m_textField");
+                object tmp = _textField.GetValue(inst);
+                if (tmp == null) return;
+
+                System.Type t = tmp.GetType();
+                if (Plugin.CritNumberColor.Value != CritNumberColorOption.Normal)
+                {
+                    Color c = Plugin.CritNumberColor.Value == CritNumberColorOption.Vermelho
+                        ? new Color(1f, 0.18f, 0.12f) : new Color(1f, 0.82f, 0.1f);
+                    t.GetProperty("color").SetValue(tmp, c, null);
+                }
+                System.Reflection.PropertyInfo fs = t.GetProperty("fontSize");
+                float size = (float)fs.GetValue(tmp, null);
+                fs.SetValue(tmp, size * Plugin.CritNumberScale.Value, null);
+            }
+            catch (System.Exception e)
+            {
+                if (Plugin.DebugLog.Value) Plugin.Log.LogWarning("CritNumberPatch: " + e.Message);
+            }
         }
     }
 }

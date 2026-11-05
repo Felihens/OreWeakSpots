@@ -6,7 +6,7 @@
 
 ## English
 
-A client-side Valheim mod that adds a timing-and-aim layer to mining. When you aim at a rock or ore deposit with a pickaxe, small balls of light appear on its surface. Hit one and the swing becomes a **critical hit** (2x damage by default), with a flash, a "CRÍTICO!" popup and a sound.
+A client-side Valheim mod that adds a timing-and-aim layer to mining. When you aim at a rock or ore deposit with a pickaxe, small balls of light appear on its surface. Hit one and the swing becomes a **critical hit** (2x damage by default), with a flash, a big yellow damage number and a sound.
 
 - **Client-side only:** the server and other players do **not** need the mod.
 - Weak spots fade in, pulse, fade out and reappear somewhere else on the rock every few seconds.
@@ -50,6 +50,8 @@ Press **F1** in game (requires Configuration Manager) or edit `BepInEx/config/fe
 | Tamanho | 1 | Size of the light balls. |
 | VolumeDoSom | 1 | Crit sound volume (0 = off). |
 | SomDoCritico | Automatico | Automatico, Arquivo (file), Jogo (game), Mod or Nenhum (none). |
+| CorDoNumeroCritico | Amarelo | Color of the crit damage number: Amarelo (yellow), Vermelho (red) or Normal. |
+| TamanhoDoNumeroCritico | 2 | Size of the crit damage number (2 = double, 1 = unchanged). |
 
 ### Custom sound
 
@@ -64,7 +66,7 @@ Drop `.wav` or `.ogg` files into `BepInEx/plugins/OreWeakSpots/SFX`. With `SomDo
 
 ## Português
 
-Mod client-side para Valheim: ao mirar numa pedra ou minério com a picareta, pequenas esferas de luz surgem na superfície. Acertar uma esfera dá **dano crítico** (2x por padrão), com clarão, texto "CRÍTICO!" e som.
+Mod client-side para Valheim: ao mirar numa pedra ou minério com a picareta, pequenas esferas de luz surgem na superfície. Acertar uma esfera dá **dano crítico** (2x por padrão), com clarão, número de dano grande e amarelo e som.
 
 - **Só no seu jogo:** o servidor e os outros jogadores **não** precisam ter o mod.
 - As esferas surgem com fade, pulsam, somem e reaparecem em outro lugar da pedra a cada poucos segundos.
@@ -108,6 +110,8 @@ Aperte **F1** no jogo (precisa do Configuration Manager) ou edite `BepInEx/confi
 | Tamanho | 1 | Tamanho das esferas. |
 | VolumeDoSom | 1 | Volume do som de crítico (0 desliga). |
 | SomDoCritico | Automatico | Automatico, Arquivo, Jogo, Mod ou Nenhum. |
+| CorDoNumeroCritico | Amarelo | Cor do número de dano do crítico: Amarelo, Vermelho ou Normal. |
+| TamanhoDoNumeroCritico | 2 | Tamanho do número de dano do crítico (2 = o dobro, 1 = sem mudança). |
 
 ### Som próprio
 

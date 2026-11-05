@@ -8,6 +8,20 @@ namespace OreWeakSpots
     /// and turns pickaxe hits that land on a spot into critical hits.
     public class WeakSpotManager : MonoBehaviour
     {
+        /// Field lookup that walks base classes and returns null quietly (AccessTools.Field logs a
+        /// warning every time a field is missing, which flooded the BepInEx log).
+        public static System.Reflection.FieldInfo FindField(System.Type t, string name)
+        {
+            const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static |
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.DeclaredOnly;
+            for (; t != null; t = t.BaseType)
+            {
+                System.Reflection.FieldInfo f = t.GetField(name, flags);
+                if (f != null) return f;
+            }
+            return null;
+        }
+
         private static WeakSpotManager _inst;
 
         private Component _target;
@@ -65,7 +79,7 @@ namespace OreWeakSpots
         private static ZNetView NViewOf(Component rock)
         {
             ZNetView nview = null;
-            System.Reflection.FieldInfo f = HarmonyLib.AccessTools.Field(rock.GetType(), "m_nview");
+            System.Reflection.FieldInfo f = FindField(rock.GetType(), "m_nview");
             if (f != null) nview = f.GetValue(rock) as ZNetView;
             if (nview == null) nview = rock.GetComponentInParent<ZNetView>();
             return nview;
@@ -93,7 +107,7 @@ namespace OreWeakSpots
                     if (prefab != null) id = prefab.name;
                 }
             }
-            System.Reflection.FieldInfo nameField = HarmonyLib.AccessTools.Field(rock.GetType(), "m_name");
+            System.Reflection.FieldInfo nameField = FindField(rock.GetType(), "m_name");
             if (nameField != null)
             {
                 string display = nameField.GetValue(rock) as string;
@@ -147,7 +161,7 @@ namespace OreWeakSpots
         private static bool DropsMoreThanStone(Component rock, int depth)
         {
             DropTable table = null;
-            System.Reflection.FieldInfo f = HarmonyLib.AccessTools.Field(rock.GetType(), "m_dropItems");
+            System.Reflection.FieldInfo f = FindField(rock.GetType(), "m_dropItems");
             if (f != null) table = f.GetValue(rock) as DropTable;
 
             Destructible d = rock as Destructible;
@@ -194,6 +208,7 @@ namespace OreWeakSpots
         private void HandleHit(Component rock, HitData hit)
         {
             _lastSeenTime = Time.time;
+            NoteHit(hit);
 
             // Same swing hitting several parts of the rock: all of them crit.
             if (_critFrame == Time.frameCount && _target == rock)
@@ -234,7 +249,29 @@ namespace OreWeakSpots
 
         private void ApplyCrit(HitData hit)
         {
+            float before = hit.m_damage.m_pickaxe;
             hit.m_damage.m_pickaxe *= Plugin.CritMultiplier.Value;
+            if (Plugin.DebugLog.Value)
+                Plugin.Log.LogInfo("Crítico: dano de picareta " + before.ToString("0.0") + " → " + hit.m_damage.m_pickaxe.ToString("0.0") +
+                                   " (x" + Plugin.CritMultiplier.Value.ToString("0.##") + ")");
+        }
+
+        // Last hit we handled, so the damage number the game shows for it can be logged too.
+        private static float _lastHitTime = -100f;
+        private static Vector3 _lastHitPos;
+
+        private static void NoteHit(HitData hit)
+        {
+            _lastHitTime = Time.time;
+            _lastHitPos = hit.m_point;
+            if (Plugin.DebugLog.Value)
+                Plugin.Log.LogInfo("Dano do golpe: picareta " + hit.m_damage.m_pickaxe.ToString("0.0") +
+                                   ", total " + hit.m_damage.GetTotalDamage().ToString("0.0"));
+        }
+
+        public static bool IsRecentHit(Vector3 pos)
+        {
+            return Time.time - _lastHitTime < 1.5f && (pos - _lastHitPos).sqrMagnitude < 16f;
         }
 
         // ---------------------------------------------------------------- update
@@ -488,10 +525,20 @@ namespace OreWeakSpots
             return q;
         }
 
+        // Where and when our last crit landed, so CritNumberPatch can restyle the damage
+        // number the game shows for it (it arrives a moment later by RPC).
+        private static float _lastCritTime = -100f;
+        private static Vector3 _lastCritPos;
+
+        public static bool IsRecentCrit(Vector3 pos)
+        {
+            return Time.time - _lastCritTime < 1.5f && (pos - _lastCritPos).sqrMagnitude < 16f;
+        }
+
         private void PlayCritEffects(Vector3 pos, Color color)
         {
-            if (DamageText.instance != null)
-                DamageText.instance.ShowText(DamageText.TextType.Weak, pos + Vector3.up * 0.4f, "CRÍTICO!", true);
+            _lastCritTime = Time.time;
+            _lastCritPos = pos;
 
             GameObject burst = new GameObject("OreWeakSpots_Burst");
             burst.transform.position = pos;
@@ -592,7 +639,7 @@ namespace OreWeakSpots
             {
                 Component comp = comps[i];
                 if (comp == null) continue;
-                System.Reflection.FieldInfo f = HarmonyLib.AccessTools.Field(comp.GetType(), "m_audioClips");
+                System.Reflection.FieldInfo f = FindField(comp.GetType(), "m_audioClips");
                 if (f != null)
                 {
                     AudioClip[] clips = f.GetValue(comp) as AudioClip[];
