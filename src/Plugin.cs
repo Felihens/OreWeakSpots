@@ -15,7 +15,7 @@ namespace OreWeakSpots
     {
         public const string GUID = "felih.OreWeakSpots";
         public const string NAME = "Ore Weak Spots";
-        public const string VERSION = "0.9.1";
+        public const string VERSION = "0.9.2";
 
         public static ManualLogSource Log;
 
