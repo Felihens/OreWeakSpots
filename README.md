@@ -7,6 +7,8 @@ Mod para Valheim (BepInEx, client-side): esferas de luz surgem nas pedras ao mir
 For players, see [package/README.md](package/README.md). That file is also the Thunderstore page.
 Para jogadores, veja [package/README.md](package/README.md).
 
+Download: [Thunderstore](https://thunderstore.io/c/valheim/p/DJAventuras/OreWeakSpots/) · [Nexus Mods](https://www.nexusmods.com/valheim/mods/4895) · [GitHub Releases](https://github.com/Felihens/OreWeakSpots/releases)
+
 ## Project layout
 
 ```

@@ -26,6 +26,8 @@ Mining with a bit of aim. When you aim at a rock or ore deposit with a pickaxe, 
 
 **r2modman / Thunderstore Mod Manager:** click *Install*. To install a downloaded zip, go to Settings → *Import local mod*.
 
+**Nexus Mods / Vortex:** also on [Nexus Mods](https://www.nexusmods.com/valheim/mods/4895).
+
 **Manual:**
 1. Extract the zip.
 2. Copy the `plugins/OreWeakSpots` folder into `Valheim/BepInEx/plugins/`.
@@ -95,6 +97,8 @@ Mineração com um pouco de mira. Ao mirar numa pedra ou depósito de minério c
 ### Instalação
 
 **r2modman / Thunderstore Mod Manager:** clique em *Install*. Para instalar um zip baixado, vá em Configurações → *Import local mod*.
+
+**Nexus Mods / Vortex:** também está no [Nexus Mods](https://www.nexusmods.com/valheim/mods/4895).
 
 **Manual:**
 1. Extraia o zip.
